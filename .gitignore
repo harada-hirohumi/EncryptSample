@@ -1,0 +1,16 @@
+# ビルド成果物
+bin/
+obj/
+
+# Visual Studio
+.vs/
+
+# VS Code
+.vscode/
+
+# ユーザー固有ファイル
+*.user
+*.suo
+
+# ログ
+*.log
