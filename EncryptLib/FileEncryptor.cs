@@ -13,8 +13,8 @@ public class FileEncryptor(byte[] key) : Encryptor(key)
 	/// <param name="outputFilePath">出力ファイルパス</param>
 	public void EncryptFile(string inputFilePath, string outputFilePath)
 	{
-		using FileStream inputStream = new FileStream(inputFilePath, FileMode.Open);
-		using FileStream outputStream = new FileStream(outputFilePath, FileMode.Create);
+		using FileStream inputStream = new(inputFilePath, FileMode.Open);
+		using FileStream outputStream = new(outputFilePath, FileMode.Create);
 		Encrypt(inputStream, outputStream);
 	}
 
@@ -25,8 +25,8 @@ public class FileEncryptor(byte[] key) : Encryptor(key)
 	/// <param name="outputFilePath">出力ファイルパス</param>
 	public void DecryptFile(string inputFilePath, string outputFilePath)
 	{
-		using FileStream inputStream = new FileStream(inputFilePath, FileMode.Open);
-		using FileStream outputStream = new FileStream(outputFilePath, FileMode.Create);
+		using FileStream inputStream = new(inputFilePath, FileMode.Open);
+		using FileStream outputStream = new(outputFilePath, FileMode.Create);
 		Decrypt(inputStream, outputStream);
 	}
 }
