@@ -69,6 +69,7 @@ public class Encryptor : IDisposable
 	/// <param name="output">出力</param>
 	public void Encrypt(Stream input, Stream output)
 	{
+		// 暗号化する度にIVを生成する。
 		alg.GenerateIV();
 
 		// IVは秘匿する必要が無いので、暗号化対象データの先頭に付与する。
@@ -97,18 +98,19 @@ public class Encryptor : IDisposable
 	/// </summary>
 	/// <param name="input">入力</param>
 	/// <param name="output">出力</param>
-	/// <exception cref="InvalidOperationException"></exception>
+	/// <exception cref="InvalidDataException">想定データではない</exception>
 	public void Decrypt(Stream input, Stream output)
 	{
+		// IVのgetterはcloneを返すので、そのまま使える
 		byte[] iv = alg.IV;
 		// 入力の先頭に付与されているIVを読み込む。
 		int read = input.Read(iv, 0, iv.Length);
 		if (read != iv.Length)
 		{
-			throw new InvalidOperationException();
+			throw new InvalidDataException();
 		}
 		// IVはsetterでセットする必要がある。
-		this.alg.IV = iv;
+		alg.IV = iv;
 
 		using ICryptoTransform transform = alg.CreateDecryptor();
 		using CryptoStream stream = new(input, transform, CryptoStreamMode.Read);
