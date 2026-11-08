@@ -3,7 +3,7 @@ using System.Text;
 namespace EncryptLib;
 
 /// <summary>
-/// 文字列の暗号化
+/// 文字列の暗号化クラス。
 /// </summary>
 /// <param name="encoding">エンコーディング</param>
 /// <param name="key">暗号鍵</param>

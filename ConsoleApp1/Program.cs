@@ -30,3 +30,8 @@ foreach(string value in encodedList)
 	string decoded = encryptor.DecryptString(value);
 	Console.WriteLine(decoded);
 }
+
+// ファイルの暗号化
+using FileEncryptor fileEncryptor = new(Convert.FromBase64String(encodedKey));
+fileEncryptor.EncryptFile(@"C:\samples\abc.txt", @"C:\samples\abc.enc");
+fileEncryptor.DecryptFile(@"C:\samples\abc.enc", @"C:\samples\abc.dec.txt");

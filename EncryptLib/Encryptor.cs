@@ -12,6 +12,8 @@ public class Encryptor : IDisposable
 	/// </summary>
 	private readonly SymmetricAlgorithm alg;
 
+	private bool _disposed;
+
 	/// <summary>
 	/// アルゴリズムの生成
 	/// </summary>
@@ -61,6 +63,7 @@ public class Encryptor : IDisposable
 
 	/// <summary>
 	/// 暗号化
+	/// ファイルの暗号化であれば、本メソッドを直接呼び出す。
 	/// </summary>
 	/// <param name="input">入力</param>
 	/// <param name="output">出力</param>
@@ -68,6 +71,7 @@ public class Encryptor : IDisposable
 	{
 		alg.GenerateIV();
 
+		// IVは秘匿する必要が無いので、暗号化対象データの先頭に付与する。
 		output.Write(alg.IV);
 
 		using ICryptoTransform transform = alg.CreateEncryptor();
@@ -97,6 +101,7 @@ public class Encryptor : IDisposable
 	public void Decrypt(Stream input, Stream output)
 	{
 		byte[] iv = alg.IV;
+		// 入力の先頭に付与されているIVを読み込む。
 		int read = input.Read(iv, 0, iv.Length);
 		if (read != iv.Length)
 		{
@@ -123,9 +128,19 @@ public class Encryptor : IDisposable
 		return output.ToArray();
 	}
 
+	/// <summary>
+	/// Dispose
+	/// </summary>
 	public void Dispose()
 	{
-		alg.Dispose();
+		if (_disposed)
+		{
+			return;
+		}
+
+		alg?.Dispose();
+		_disposed = true;
+		// ファイナライザはそもそも無いが、警告避け
 		GC.SuppressFinalize(this);
 	}
 }
