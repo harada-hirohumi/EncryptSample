@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EncryptLib/EncryptLib.csproj" />
+  <Project Path="TestEncryptLib/TestEncryptLib.csproj" />
+</Solution>

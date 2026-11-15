@@ -9,13 +9,21 @@ namespace EncryptLib;
 /// <param name="key">暗号鍵</param>
 public class StringEncryptor(Encoding encoding, byte[] key) : Encryptor(key)
 {
-	private readonly Encoding encoding = encoding;
+	/// <summary>
+	/// デフォルトのエンコーディング
+	/// </summary>
+	private static 	readonly Encoding DefaultEncoding = Encoding.UTF8;
+
+	/// <summary>
+	/// エンコーディング
+	/// </summary>
+	private readonly Encoding Encoding = encoding;
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="key">暗号鍵</param>
-	public StringEncryptor(byte[] key) : this(Encoding.UTF8, key)
+	public StringEncryptor(byte[] key) : this(DefaultEncoding, key)
 	{
 		
 	}
@@ -27,7 +35,7 @@ public class StringEncryptor(Encoding encoding, byte[] key) : Encryptor(key)
 	/// <returns>暗号化結果のBase64表現</returns>
 	public string EncyptString(string value)
 	{
-		byte[] data = Encrypt(encoding.GetBytes(value));
+		byte[] data = Encrypt(Encoding.GetBytes(value));
 		return Convert.ToBase64String(data);
 	}
 
@@ -39,6 +47,6 @@ public class StringEncryptor(Encoding encoding, byte[] key) : Encryptor(key)
 	public string DecryptString(string value)
 	{
 		byte[] data = Decrypt(Convert.FromBase64String(value));
-		return encoding.GetString(data);
+		return Encoding.GetString(data);
 	}
 }
