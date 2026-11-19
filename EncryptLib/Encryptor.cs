@@ -14,6 +14,12 @@ public class Encryptor : IDisposable
 
 	private bool _disposed;
 
+	private readonly int iterations;
+
+	private readonly HashAlgorithmName hashAlgorithm;
+
+	private readonly int keySizeInBytes;
+
 	/// <summary>
 	/// アルゴリズムの生成
 	/// </summary>
@@ -40,6 +46,9 @@ public class Encryptor : IDisposable
 	public Encryptor()
 	{
 		alg = CreateAlgorithm();	   
+		keySizeInBytes = alg.KeySize / 8;
+		hashAlgorithm = HashAlgorithmName.SHA256;
+		iterations = 10000;
 	}
 
 	/// <summary>
@@ -48,7 +57,7 @@ public class Encryptor : IDisposable
 	/// <param name="key">暗号化鍵</param>
 	public Encryptor(byte[] key) : this()
 	{
-		alg.Key = key;
+		alg.Key	 = Rfc2898DeriveBytes.Pbkdf2(key, key, iterations, hashAlgorithm, keySizeInBytes);
 	}
 
 	/// <summary>
