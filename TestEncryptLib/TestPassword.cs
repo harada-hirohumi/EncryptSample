@@ -29,4 +29,23 @@ public class TestPassword
 		bool isVerifiedWrong = password.VerifyPassword("Password", hashedPassword);
 		Assert.IsFalse(isVerifiedWrong);
 	}
+
+	[TestMethod]
+	public void TestHashPassword()
+	{
+		Password password = new();
+		string originalPassword = "password";
+		List<byte[]> hashedPasswords = new();
+		for (int i = 0; i < 10; i++)
+		{
+			byte[] hashedPassword = password.HashPassword(originalPassword);
+			Assert.IsNotNull(hashedPassword);
+			hashedPasswords.Add(hashedPassword);
+			// ハッシュ化した結果は毎回異なることを確認
+			for (int j = 0; j < i; j++)
+			{
+				Assert.AreNotEqual(Convert.ToBase64String(hashedPassword), Convert.ToBase64String(hashedPasswords[j]));
+			}
+		}
+	}
 }

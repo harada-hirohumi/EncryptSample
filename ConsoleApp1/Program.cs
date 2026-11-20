@@ -10,7 +10,9 @@ Console.WriteLine("Hello, World!");
 //Console.WriteLine(encodedKey);
 
 string encodedKey = "e/HpdTfyirkmq3LJKxKgebr40wvjJt/OlGUy6wue770=";
-using StringEncryptor encryptor = new(Encoding.UTF8, Convert.FromBase64String(encodedKey));
+string encodedSalt = "e/HpdTfyIrkmq3LJKxKgebr20wvjJt/OlgUy6wue770=";
+
+using StringEncryptor encryptor = new(Encoding.UTF8, Convert.FromBase64String(encodedKey), Convert.FromBase64String(encodedSalt));
 
 string soure = "日本語";
 
@@ -32,6 +34,6 @@ foreach(string value in encodedList)
 }
 
 // ファイルの暗号化
-using FileEncryptor fileEncryptor = new(Convert.FromBase64String(encodedKey));
+using FileEncryptor fileEncryptor = new(Convert.FromBase64String(encodedKey), Convert.FromBase64String(encodedSalt));
 fileEncryptor.EncryptFile(@"C:\samples\abc.txt", @"C:\samples\abc.enc");
 fileEncryptor.DecryptFile(@"C:\samples\abc.enc", @"C:\samples\abc.dec.txt");

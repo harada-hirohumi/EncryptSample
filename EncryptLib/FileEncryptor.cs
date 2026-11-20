@@ -4,7 +4,8 @@ namespace EncryptLib;
 /// ファイルを暗号化するクラス
 /// </summary>
 /// <param name="key">暗号化鍵</param>
-public class FileEncryptor(byte[] key) : Encryptor(key)
+/// <param name="salt">ソルト</param>
+public class FileEncryptor(byte[] key, byte[] salt) : Encryptor(key, salt)
 {
 	/// <summary>
 	/// 暗号化

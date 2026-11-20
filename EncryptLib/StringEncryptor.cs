@@ -7,7 +7,8 @@ namespace EncryptLib;
 /// </summary>
 /// <param name="encoding">エンコーディング</param>
 /// <param name="key">暗号鍵</param>
-public class StringEncryptor(Encoding encoding, byte[] key) : Encryptor(key)
+/// <param name="salt">ソルト</param>
+public class StringEncryptor(Encoding encoding, byte[] key, byte[] salt) : Encryptor(key, salt)
 {
 	/// <summary>
 	/// デフォルトのエンコーディング
@@ -23,7 +24,8 @@ public class StringEncryptor(Encoding encoding, byte[] key) : Encryptor(key)
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="key">暗号鍵</param>
-	public StringEncryptor(byte[] key) : this(DefaultEncoding, key)
+	/// <param name="salt">ソルト</param>
+	public StringEncryptor(byte[] key, byte[] salt) : this(DefaultEncoding, key, salt)
 	{
 		
 	}

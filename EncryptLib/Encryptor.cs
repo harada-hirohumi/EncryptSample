@@ -8,17 +8,19 @@ namespace EncryptLib;
 public class Encryptor : IDisposable
 {
 	/// <summary>
-	/// 対象アルゴリズム
+	/// Dispose済みかどうか
+	/// </summary>
+	private bool _disposed;
+
+	/// <summary>
+	/// 暗号化対象アルゴリズム
 	/// </summary>
 	private readonly SymmetricAlgorithm alg;
 
-	private bool _disposed;
-
-	private readonly int iterations;
-
+	/// <summary>
+	/// 暗号鍵生成用ハッシュアルゴリズム
+	/// </summary>
 	private readonly HashAlgorithmName hashAlgorithm;
-
-	private readonly int keySizeInBytes;
 
 	/// <summary>
 	/// アルゴリズムの生成
@@ -43,21 +45,53 @@ public class Encryptor : IDisposable
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	public Encryptor()
+	public Encryptor() : this(HashAlgorithmName.SHA256)
+	{
+	}
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="hashAlgorithm">ハッシュアルゴリズム</param>
+	public Encryptor(HashAlgorithmName hashAlgorithm)
 	{
 		alg = CreateAlgorithm();	   
-		keySizeInBytes = alg.KeySize / 8;
-		hashAlgorithm = HashAlgorithmName.SHA256;
-		iterations = 10000;
+		this.hashAlgorithm = hashAlgorithm;
 	}
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="key">暗号化鍵</param>
-	public Encryptor(byte[] key) : this()
+	/// <param name="salt">ソルト</param>
+	public Encryptor(byte[] key, byte[] salt) : this(key, salt, 100000)
 	{
-		alg.Key	 = Rfc2898DeriveBytes.Pbkdf2(key, key, iterations, hashAlgorithm, keySizeInBytes);
+	}
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="key">暗号化鍵</param>
+	/// <param name="salt">ソルト</param>
+	/// <param name="iterations">PBKDF2の反復回数</param>
+	/// <exception cref="ArgumentNullException">keyまたはsaltがnull</exception>
+	/// <exception cref="ArgumentException">keyまたはsaltが空配列</exception>
+	public Encryptor(byte[] key, byte[] salt, int iterations) : this()
+	{
+		ArgumentNullException.ThrowIfNull(key);
+		ArgumentNullException.ThrowIfNull(salt);
+		if (key.Length == 0)
+		{
+			throw new ArgumentException("key must not be empty.", nameof(key));
+		}
+		if (salt.Length == 0)
+		{
+			throw new ArgumentException("salt must not be empty.", nameof(salt));
+		}
+
+		int keySizeInBytes = alg.KeySize / 8;
+		// PBKDF2で鍵を生成する。キーは流出する可能性があるので直接使用しない。
+		alg.Key = Rfc2898DeriveBytes.Pbkdf2(key, salt, iterations, hashAlgorithm, keySizeInBytes);
 	}
 
 	/// <summary>
@@ -146,6 +180,7 @@ public class Encryptor : IDisposable
 	{
 		if (_disposed)
 		{
+			// すでにDispose済みでもエラーにはしない
 			return;
 		}
 
